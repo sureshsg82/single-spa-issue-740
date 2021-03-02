@@ -17,6 +17,8 @@
   -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: localhost:*; script-src 'unsafe-inline' 'unsafe-eval' https: localhost:*; connect-src https: localhost:* ws://localhost:*; style-src 'unsafe-inline' https:; object-src 'none';">
   <meta name="importmap-type" content="systemjs-importmap" />
+  <script> if (typeof fetch === 'undefined') { document.write('<script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.4.0/dist/fetch.umd.js"><\/script>') } if (typeof String.prototype.startsWith === 'undefined' || typeof Promise === 'undefined') { document.write('<script src="https://cdn.jsdelivr.net/npm/@babel/polyfill@7.10.4/dist/polyfill.min.js"><\/script>') } </script>
+  
   <script>
     if (typeof fetch === 'undefined') {
       document.write('<script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.4.0/dist/fetch.umd.js"><\/script>')
@@ -37,7 +39,7 @@
 
     More information about shared dependencies can be found at https://single-spa.js.org/docs/recommended-setup#sharing-with-import-maps.
   -->
-  <script type="systemjs-importmap">
+ <script type="systemjs-importmap">
     {
       "imports": {
         "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js"
@@ -53,7 +55,13 @@
   <script type="systemjs-importmap">
     {
       "imports": {
-        "@org/root-config": "//localhost:9000/org-root-config.js"
+        "react": "https://cdn.jsdelivr.net/npm/react@17.0.1/umd/react.production.min.js",
+    "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@17.0.1/umd/react-dom.production.min.js",
+    "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.8.2/lib/system/single-spa.min.js",
+    "@react-mf/people": "https://react.microfrontends.app/people/4d0af0a673764fa9b311f9f98163c88be9af9426/react-mf-people.js",
+    "rxjs": "https://cdn.jsdelivr.net/npm/@esm-bundle/rxjs@6.6.3/system/es2015/rxjs.min.js",
+    "rxjs/operators": "https://cdn.jsdelivr.net/npm/@esm-bundle/rxjs@6.6.3/system/es2015/rxjs-operators.min.js",
+            "@org/root-config": "//localhost:9000/org-root-config.js"
       }
     }
   </script>
@@ -73,9 +81,26 @@
   <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.min.js"></script>
   <% } %>
+  <template id="single-spa-layout">
+    <single-spa-router>
+      <div class="main-content mt-16">
+        <route path="people">
+          <application name="@react-mf/people"></application>
+        </route>
+        <route path="planets">
+          <application name="@react-mf/planets"></application>
+        </route>
+        <redirect from="/earth" to="/planets"></redirect>
+        <route default>
+          <h1 class="flex flex-row justify-center p-16">
+            <p class="max-w-md">This example project shows independently built and deployed microfrontends that use React and single-spa. Each nav link above takes you to a different microfrontend.</p>
+          </h1>
+        </route>
+      </div>
+    </single-spa-router>
+  </template>
 </head>
 <body>
-  <main></main>
   <script>
     System.import('@org/root-config');
   </script>

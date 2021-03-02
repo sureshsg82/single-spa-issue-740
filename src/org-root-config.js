@@ -1,23 +1,33 @@
 import {
-  mountRootParcel,
-  registerApplication,
-  start,
-  UNMOUNTING,
-} from "single-spa";
+  constructRoutes,
+  constructApplications,
+  constructLayoutEngine,
+} from "single-spa-layout";
+import { registerApplication, start } from "single-spa";
 
-registerApplication({
-  name: "@org/navbar",
-  app: {
-    async mount() {
-      document.querySelector("main").textContent = "app is mounted";
-    },
-    async unmount() {
-      document.querySelector("main").textContent = "";
-    },
+const routes = constructRoutes(document.querySelector("#single-spa-layout"), {
+  loaders: {
+    topNav: "<h1>Loading topnav</h1>",
   },
-  activeWhen: ["/"],
+  errors: {
+    topNav: "<h1>Failed to load topnav</h1>",
+  },
+});
+const applications = constructApplications({
+  routes,
+  loadApp: ({ name }) => System.import(name),
+});
+// Delay starting the layout engine until the styleguide CSS is loaded
+const layoutEngine = constructLayoutEngine({
+  routes,
+  applications,
+  active: false,
 });
 
-start({
-  urlRerouteOnly: true,
-});
+applications.forEach(registerApplication);
+
+// System.import("@react-mf/styleguide").then(() => {
+  // Activate the layout engine once the styleguide CSS is loaded
+  layoutEngine.activate();
+  start();
+//});
