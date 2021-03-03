@@ -39,6 +39,7 @@
     "webpack-merge": "^5.5.0"
   },
   "dependencies": {
-    "single-spa": "^5.8.2"
+    "single-spa": "^5.8.2",
+    "single-spa-layout": "^1.4.4"
   }
 }
